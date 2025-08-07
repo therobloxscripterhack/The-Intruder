@@ -1,0 +1,99 @@
+ -- 在 ServerScriptService 中创建这个脚本 
+ local Players = game:GetService("Players")
+  
+ local function applyHighlight(target, color)
+     if not target then return end
+     
+ -- 移除旧的高亮效果（如果有）
+     for _, existing in ipairs(target:GetDescendants()) do 
+         if existing:IsA("Highlight") then
+             existing:Destroy()
+         end
+     end 
+  
+ -- 处理不同类型的对象
+     if target:IsA("Model") then 
+         if not target.PrimaryPart then
+             warn("Model "..target.Name.." has no PrimaryPart")
+             return
+         end 
+         
+         local highlight = Instance.new("Highlight")
+         highlight.Name = "TargetHighlight"
+         highlight.FillTransparency = 0.5
+         highlight.OutlineTransparency = 0
+         highlight.FillColor = color
+         highlight.OutlineColor = color
+         highlight.Adornee = target.PrimaryPart 
+         highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+         highlight.Parent = target 
+         
+ -- 为所有部件添加高亮
+         for _, part in ipairs(target:GetDescendants()) do 
+             if part:IsA("BasePart") then 
+                 local partHighlight = highlight:Clone()
+                 partHighlight.Adornee = part
+                 partHighlight.Parent = part
+             end 
+         end
+     elseif target:IsA("BasePart") then
+         local highlight = Instance.new("Highlight")
+         highlight.Name = "TargetHighlight"
+         highlight.FillTransparency = 0.5
+         highlight.OutlineTransparency = 0
+         highlight.FillColor = color
+         highlight.OutlineColor = color
+         highlight.Adornee = target 
+         highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+         highlight.Parent = target 
+     end
+ end
+  
+ local function highlightAll()
+ -- 高亮 Intruder（红色）
+     local intruder = workspace:WaitForChild("Intruder", 5) -- 等待5秒
+     if intruder then
+         applyHighlight(intruder, Color3.fromRGB(255, 50, 50))
+     else 
+         warn("⚠️ Intruder not found in Workspace")
+     end
+     
+ -- 高亮 Generators 1-5（不同颜色）
+     local generators = workspace:FindFirstChild("Generators")
+     if generators then
+         local colors = {
+             Color3.fromRGB(0, 162, 255),  -- 1: 蓝色
+             Color3.fromRGB(0, 255, 100),  -- 2: 绿色
+             Color3.fromRGB(255, 255, 0),  -- 3: 黄色
+             Color3.fromRGB(200, 0, 255),  -- 4: 紫色
+             Color3.fromRGB(255, 100, 0)   -- 5: 橙色
+         }
+         
+         for i = 1, 5 do
+             local gen = generators:FindFirstChild(tostring(i))
+             if gen then
+                 applyHighlight(gen, colors[i])
+             else
+                 warn("⚠️ Generator "..i.." not found")
+             end 
+         end
+     else 
+         warn("⚠️ Generators folder not found")
+     end 
+ end 
+  
+ -- 玩家加入时执行（确保客户端能看到效果）
+ Players.PlayerAdded:Connect(function(player)
+     player.CharacterAdded:Connect(function()
+         highlightAll()
+     end)
+ end)
+  
+ -- 初始执行（服务端）
+ highlightAll()
+  
+ -- 动态监听（每10秒检查一次）
+ while true do
+     wait(10)
+     pcall(highlightAll) -- 防止错误中断循环
+ end
