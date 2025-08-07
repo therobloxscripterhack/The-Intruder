@@ -75,8 +75,8 @@
      elseif game.Workspace:FindFirstChild("Screamer") then
          ShowNotification("!!! 尖叫者来了 !!!", 3)
      elseif game.Workspace:FindFirstChild("Caller") then
-         ShowNotification("!! 呼叫者来了，关灯 !!", 3)
+         ShowNotification("!! 呼叫者来了，别接电话 !!", 3)
      elseif game.Workspace:FindFirstChild("Train") then
-         ShowNotification("! 可能是呼叫者 !", 2)
+         ShowNotification("! 呼叫者前兆，关灯 !", 2)
      end
  end)
