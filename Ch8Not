@@ -1,0 +1,82 @@
+ -- 将此脚本放入 StarterPlayerScripts 中
+ local Players = game:GetService("Players")
+ local RunService = game:GetService("RunService")
+ local player = Players.LocalPlayer
+ 
+ -- 当前弹窗控制变量
+ local currentNotification = nil
+ local destroyConnection = nil
+ 
+ -- 创建高优先级通知函数
+ local function ShowNotification(message, duration)
+ -- 立即清除之前的弹窗和计时器
+     if currentNotification then
+         currentNotification:Destroy()
+         currentNotification = nil
+     end
+     if destroyConnection then
+         destroyConnection:Disconnect()
+         destroyConnection = nil
+     end
+ 
+ -- 创建新弹窗
+     local gui = Instance.new("ScreenGui")
+     gui.Name = "Notification"
+     gui.DisplayOrder = 100  -- 最高优先级
+     gui.ResetOnSpawn = false
+     gui.Parent = player:WaitForChild("PlayerGui")
+ 
+     local frame = Instance.new("Frame")
+     frame.Size = UDim2.new(0.25, 0, 0.06, 0)  -- 更小的尺寸
+     frame.Position = UDim2.new(0, 10, 0, 10)  -- 左上角
+     frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+     frame.BackgroundTransparency = 0.3
+     frame.BorderSizePixel = 0
+     frame.Parent = gui
+ 
+     local text = Instance.new("TextLabel")
+     text.Size = UDim2.new(1, -10, 1, -10)  -- 内边距
+     text.Position = UDim2.new(0, 5, 0, 5)
+     text.Text = message
+     text.TextColor3 = Color3.fromRGB(255, 70, 70)
+     text.TextScaled = true
+     text.Font = Enum.Font.GothamBlack
+     text.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+     text.TextStrokeTransparency = 0.4
+     text.BackgroundTransparency = 1
+     text.Parent = frame
+ 
+ -- 设置当前弹窗
+     currentNotification = gui
+ 
+ -- 设置自动销毁
+     destroyConnection = game:GetService("Debris"):AddItem(gui, duration)
+ end
+ 
+ -- 持续检查游戏状态
+ local DEBOUNCE_TIME = 0.1  -- 100毫秒防抖
+ local lastCheck = 0
+ 
+ RunService.Heartbeat:Connect(function()
+ -- 防抖处理
+     local now = tick()
+     if now - lastCheck < DEBOUNCE_TIME then return end
+     lastCheck = now
+ 
+     local config = game.Workspace:FindFirstChild("Configuration")
+     if not config then return end
+     
+     local isInRoom = config:FindFirstChild("isInRoom")
+     if not isInRoom or not isInRoom.Value then return end
+     
+ -- 按优先级检查各种实体
+     if game.Workspace:FindFirstChild("ScreamerRunBy") then
+         ShowNotification("!! 尖叫者前兆，躲起来 !!", 3)
+     elseif game.Workspace:FindFirstChild("Screamer") then
+         ShowNotification("!!! 尖叫者来了 !!!", 3)
+     elseif game.Workspace:FindFirstChild("Caller") then
+         ShowNotification("!! 呼叫者来了，关灯 !!", 3)
+     elseif game.Workspace:FindFirstChild("Train") then
+         ShowNotification("! 可能是呼叫者 !", 2)
+     end
+ end)
