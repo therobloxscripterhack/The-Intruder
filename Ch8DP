@@ -1,0 +1,78 @@
+-- 创建一个ScreenGui并设置高DisplayOrder
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "StatusDisplay"
+screenGui.DisplayOrder = 100  -- 设置较高的显示优先级（默认是0，越大越靠前）
+screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+-- 创建一个Frame作为窗口背景
+local frame = Instance.new("Frame")
+frame.Name = "StatusFrame"
+frame.Size = UDim2.new(0.2, 0, 0.15, 0)  -- 宽度20%，高度15%
+frame.Position = UDim2.new(0.79, 0, 0.05, 0)  -- 右上角位置
+frame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+frame.BackgroundTransparency = 0.3
+frame.BorderSizePixel = 0
+frame.Parent = screenGui
+
+-- 添加标题
+local title = Instance.new("TextLabel")
+title.Name = "Title"
+title.Text = "入侵者状态"
+title.Size = UDim2.new(1, 0, 0.3, 0)
+title.Position = UDim2.new(0, 0, 0, 0)
+title.BackgroundTransparency = 1
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.Font = Enum.Font.SourceSansBold
+title.TextSize = 18
+title.Parent = frame
+
+-- 添加intruderPos显示
+local intruderLabel = Instance.new("TextLabel")
+intruderLabel.Name = "IntruderPosLabel"
+intruderLabel.Text = "位置: 加载中..."
+intruderLabel.Size = UDim2.new(1, 0, 0.35, 0)
+intruderLabel.Position = UDim2.new(0, 0, 0.3, 0)
+intruderLabel.BackgroundTransparency = 1
+intruderLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+intruderLabel.Font = Enum.Font.SourceSans
+intruderLabel.TextSize = 16
+intruderLabel.TextXAlignment = Enum.TextXAlignment.Left
+intruderLabel.Parent = frame
+
+-- 添加isInRoom显示
+local roomLabel = Instance.new("TextLabel")
+roomLabel.Name = "IsInRoomLabel"
+roomLabel.Text = "在房间内: 加载中..."
+roomLabel.Size = UDim2.new(1, 0, 0.35, 0)
+roomLabel.Position = UDim2.new(0, 0, 0.65, 0)
+roomLabel.BackgroundTransparency = 1
+roomLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+roomLabel.Font = Enum.Font.SourceSans
+roomLabel.TextSize = 16
+roomLabel.TextXAlignment = Enum.TextXAlignment.Left
+roomLabel.Parent = frame
+
+-- 函数：更新UI显示
+local function updateDisplay()
+    local intruderPosValue = game.Workspace.Configuration:FindFirstChild("intruderPos")
+    local isInRoomValue = game.Workspace.Configuration:FindFirstChild("isInRoom")
+    
+    if intruderPosValue then
+        intruderLabel.Text = "位置: " .. intruderPosValue.Value
+    else
+        intruderLabel.Text = "位置: 未知"
+    end
+    
+    if isInRoomValue then
+        roomLabel.Text = "在房间内: " .. (isInRoomValue.Value and "是" or "否")
+    else
+        roomLabel.Text = "在房间内: 未知"
+    end
+end
+
+-- 初始更新
+updateDisplay()
+
+-- 监听值的变化
+game.Workspace.Configuration.intruderPos.Changed:Connect(updateDisplay)
+game.Workspace.Configuration.isInRoom.Changed:Connect(updateDisplay)
