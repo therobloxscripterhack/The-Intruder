@@ -1,0 +1,165 @@
+-- 创建右侧窗口（优先级100）
+local rightScreenGui = Instance.new("ScreenGui")
+rightScreenGui.Name = "RightStatusDisplay"
+rightScreenGui.DisplayOrder = 100  -- 高优先级
+rightScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+local rightFrame = Instance.new("Frame")
+rightFrame.Name = "RightStatusFrame"
+rightFrame.Size = UDim2.new(0.2, 0, 0.15, 0)
+rightFrame.Position = UDim2.new(0.79, 0, 0.05, 0)
+rightFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+rightFrame.BackgroundTransparency = 0.3
+rightFrame.BorderSizePixel = 0
+rightFrame.Parent = rightScreenGui
+
+local rightTitle = Instance.new("TextLabel")
+rightTitle.Name = "RightTitle"
+rightTitle.Text = "入侵者状态 (1)"
+rightTitle.Size = UDim2.new(1, 0, 0.3, 0)
+rightTitle.Position = UDim2.new(0, 0, 0, 0)
+rightTitle.BackgroundTransparency = 1
+rightTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+rightTitle.Font = Enum.Font.SourceSansBold
+rightTitle.TextSize = 18
+rightTitle.Parent = rightFrame
+
+local intruderPos1Label = Instance.new("TextLabel")
+intruderPos1Label.Name = "IntruderPos1Label"
+intruderPos1Label.Text = "位置1: 加载中..."
+intruderPos1Label.Size = UDim2.new(1, 0, 0.35, 0)
+intruderPos1Label.Position = UDim2.new(0, 0, 0.3, 0)
+intruderPos1Label.BackgroundTransparency = 1
+intruderPos1Label.TextColor3 = Color3.fromRGB(255, 255, 255)
+intruderPos1Label.Font = Enum.Font.SourceSans
+intruderPos1Label.TextSize = 16
+intruderPos1Label.TextXAlignment = Enum.TextXAlignment.Left
+intruderPos1Label.Parent = rightFrame
+
+local isInRoom1Label = Instance.new("TextLabel")
+isInRoom1Label.Name = "IsInRoom1Label"
+isInRoom1Label.Text = "在房间1: 加载中..."
+isInRoom1Label.Size = UDim2.new(1, 0, 0.35, 0)
+isInRoom1Label.Position = UDim2.new(0, 0, 0.65, 0)
+isInRoom1Label.BackgroundTransparency = 1
+isInRoom1Label.TextColor3 = Color3.fromRGB(255, 255, 255)
+isInRoom1Label.Font = Enum.Font.SourceSans
+isInRoom1Label.TextSize = 16
+isInRoom1Label.TextXAlignment = Enum.TextXAlignment.Left
+isInRoom1Label.Parent = rightFrame
+
+-- 创建左侧窗口（优先级99）
+local leftScreenGui = Instance.new("ScreenGui")
+leftScreenGui.Name = "LeftStatusDisplay"
+leftScreenGui.DisplayOrder = 99  -- 稍低优先级
+leftScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+local leftFrame = Instance.new("Frame")
+leftFrame.Name = "LeftStatusFrame"
+leftFrame.Size = UDim2.new(0.2, 0, 0.2, 0)  -- 稍高以容纳3个值
+leftFrame.Position = UDim2.new(0.01, 0, 0.05, 0)  -- 左上角
+leftFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+leftFrame.BackgroundTransparency = 0.3
+leftFrame.BorderSizePixel = 0
+leftFrame.Parent = leftScreenGui
+
+local leftTitle = Instance.new("TextLabel")
+leftTitle.Name = "LeftTitle"
+leftTitle.Text = "入侵者状态 (2)"
+leftTitle.Size = UDim2.new(1, 0, 0.25, 0)
+leftTitle.Position = UDim2.new(0, 0, 0, 0)
+leftTitle.BackgroundTransparency = 1
+leftTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+leftTitle.Font = Enum.Font.SourceSansBold
+leftTitle.TextSize = 18
+leftTitle.Parent = leftFrame
+
+local intruderPos2Label = Instance.new("TextLabel")
+intruderPos2Label.Name = "IntruderPos2Label"
+intruderPos2Label.Text = "位置2: 加载中..."
+intruderPos2Label.Size = UDim2.new(1, 0, 0.25, 0)
+intruderPos2Label.Position = UDim2.new(0, 0, 0.25, 0)
+intruderPos2Label.BackgroundTransparency = 1
+intruderPos2Label.TextColor3 = Color3.fromRGB(255, 255, 255)
+intruderPos2Label.Font = Enum.Font.SourceSans
+intruderPos2Label.TextSize = 16
+intruderPos2Label.TextXAlignment = Enum.TextXAlignment.Left
+intruderPos2Label.Parent = leftFrame
+
+local isInRoom2Label = Instance.new("TextLabel")
+isInRoom2Label.Name = "IsInRoom2Label"
+isInRoom2Label.Text = "在房间2: 加载中..."
+isInRoom2Label.Size = UDim2.new(1, 0, 0.25, 0)
+isInRoom2Label.Position = UDim2.new(0, 0, 0.5, 0)
+isInRoom2Label.BackgroundTransparency = 1
+isInRoom2Label.TextColor3 = Color3.fromRGB(255, 255, 255)
+isInRoom2Label.Font = Enum.Font.SourceSans
+isInRoom2Label.TextSize = 16
+isInRoom2Label.TextXAlignment = Enum.TextXAlignment.Left
+isInRoom2Label.Parent = leftFrame
+
+local isInRoom3Label = Instance.new("TextLabel")
+isInRoom3Label.Name = "IsInRoom3Label"
+isInRoom3Label.Text = "在房间3: 加载中..."
+isInRoom3Label.Size = UDim2.new(1, 0, 0.25, 0)
+isInRoom3Label.Position = UDim2.new(0, 0, 0.75, 0)
+isInRoom3Label.BackgroundTransparency = 1
+isInRoom3Label.TextColor3 = Color3.fromRGB(255, 255, 255)
+isInRoom3Label.Font = Enum.Font.SourceSans
+isInRoom3Label.TextSize = 16
+isInRoom3Label.TextXAlignment = Enum.TextXAlignment.Left
+isInRoom3Label.Parent = leftFrame
+
+-- 更新右侧窗口
+local function updateRightDisplay()
+    local intruderPos1Value = game.Workspace.Values:FindFirstChild("intruderPos1")
+    local isInRoom1Value = game.Workspace.Values:FindFirstChild("isInRoom1")
+    
+    if intruderPos1Value then
+        intruderPos1Label.Text = "位置1: " .. intruderPos1Value.Value
+    else
+        intruderPos1Label.Text = "位置1: 未知"
+    end
+    
+    if isInRoom1Value then
+        isInRoom1Label.Text = "在房间1: " .. (isInRoom1Value.Value and "是" or "否")
+    else
+        isInRoom1Label.Text = "在房间1: 未知"
+    end
+end
+
+-- 更新左侧窗口
+local function updateLeftDisplay()
+    local intruderPos2Value = game.Workspace.Values:FindFirstChild("intruderPos2")
+    local isInRoom2Value = game.Workspace.Values:FindFirstChild("isInRoom2")
+    local isInRoom3Value = game.Workspace.Values:FindFirstChild("isInRoom3")
+    
+    if intruderPos2Value then
+        intruderPos2Label.Text = "位置2: " .. intruderPos2Value.Value
+    else
+        intruderPos2Label.Text = "位置2: 未知"
+    end
+    
+    if isInRoom2Value then
+        isInRoom2Label.Text = "在房间2: " .. (isInRoom2Value.Value and "是" or "否")
+    else
+        isInRoom2Label.Text = "在房间2: 未知"
+    end
+    
+    if isInRoom3Value then
+        isInRoom3Label.Text = "在房间3: " .. (isInRoom3Value.Value and "是" or "否")
+    else
+        isInRoom3Label.Text = "在房间3: 未知"
+    end
+end
+
+-- 初始更新
+updateRightDisplay()
+updateLeftDisplay()
+
+-- 监听值的变化
+game.Workspace.Values.intruderPos1.Changed:Connect(updateRightDisplay)
+game.Workspace.Values.isInRoom1.Changed:Connect(updateRightDisplay)
+game.Workspace.Values.intruderPos2.Changed:Connect(updateLeftDisplay)
+game.Workspace.Values.isInRoom2.Changed:Connect(updateLeftDisplay)
+game.Workspace.Values.isInRoom3.Changed:Connect(updateLeftDisplay)
